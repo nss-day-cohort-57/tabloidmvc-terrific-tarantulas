@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
+using System;
+using System.Collections.Generic;
 using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
@@ -76,7 +79,7 @@ namespace TabloidMVC.Controllers
             try
             {
                 vm.Post.CreateDateTime = DateAndTime.Now;
-                vm.Post.IsApproved = true;
+                vm.Post.IsApproved = false;
                 vm.Post.UserProfileId = GetCurrentUserProfileId();
 
                 _postRepository.Add(vm.Post);
@@ -94,6 +97,42 @@ namespace TabloidMVC.Controllers
         {
             string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
             return int.Parse(id);
+        }
+
+        public IActionResult Edit(int id)
+        {
+            Post post = _postRepository.GetPostById(id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            List<Category> categories = _categoryRepository.GetAll();
+
+            PostCreateViewModel vm = new PostCreateViewModel()
+            {
+                Post = post,
+                CategoryOptions = categories
+            };
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, PostCreateViewModel vm)
+        {
+            try
+            {
+                _postRepository.UpdatePost(vm.Post);
+
+                return RedirectToAction("Index");
+            }
+            catch
+            {
+                return View(vm);
+            }
         }
     }
 }
