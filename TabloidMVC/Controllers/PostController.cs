@@ -79,7 +79,7 @@ namespace TabloidMVC.Controllers
             try
             {
                 vm.Post.CreateDateTime = DateAndTime.Now;
-                vm.Post.IsApproved = true;
+                vm.Post.IsApproved = false;
                 vm.Post.UserProfileId = GetCurrentUserProfileId();
 
                 _postRepository.Add(vm.Post);
@@ -121,17 +121,17 @@ namespace TabloidMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, Post post)
+        public IActionResult Edit(int id, PostCreateViewModel vm)
         {
             try
             {
-                _postRepository.UpdatePost(post);
+                _postRepository.UpdatePost(vm.Post);
 
                 return RedirectToAction("Index");
             }
-            catch (Exception ex)
+            catch
             {
-                return View(post);
+                return View(vm);
             }
         }
     }
