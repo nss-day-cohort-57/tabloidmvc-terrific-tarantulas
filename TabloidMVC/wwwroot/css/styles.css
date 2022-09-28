@@ -10574,6 +10574,23 @@ a.text-dark:hover, a.text-dark:focus {
                 color: #625772;
             }
 
+        #mainNav .navbar-nav li.nav-item a.nav-linkdropdown {
+            color: #625772;
+            width:fit-content
+        }
+
+            #mainNav .navbar-nav li.nav-item a.nav-linkdropdown:hover {
+                color: #625772;
+            }
+
+            #mainNav .navbar-nav li.nav-item a.nav-linkdropdown:active, #mainNav .navbar-nav li.nav-item a.nav-link:focus {
+                color: #625772;
+            }
+
+            #mainNav .navbar-nav li.nav-item a.nav-linkdropdown.active {
+                color: #625772;
+            }
+
     #mainNav .navbar-toggler {
         font-size: 80%;
         padding: 0.8rem;
