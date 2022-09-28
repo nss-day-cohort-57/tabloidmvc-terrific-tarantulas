@@ -7,20 +7,20 @@
 <h1>React</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-controller="Reaction" asp-action="Create">Create New</a>
 </p>
 <table class="table">
     <tbody>
         <form asp-action="React">
-            @foreach (var item in Model.allReactions) {
-                <tr>
-                    <td>
-                    <button type="submit" asp-route-reactId=@item.Id class="btn btn-primary">
-                            <img src="@item.ImageLocation" height="100px" width="100px" />
-                        </button>
-                    </td>
-                </tr>
-            }
+                <tr class="row">
+                    @foreach (var item in Model.allReactions) {
+                            <td>
+                            <button type="submit" asp-route-reactId=@item.Id class="btn btn-primary">
+                                <img src="@item.ImageLocation" height="100px" width="100px" />
+                            </button>
+                        </td>
+                    }
+             </tr>
         </form>
     </tbody>
 </table>
