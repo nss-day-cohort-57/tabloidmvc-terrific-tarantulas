@@ -4,6 +4,7 @@ using System.Data;
 using System.Reflection.PortableExecutable;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using TabloidMVC.Models;
 using TabloidMVC.Utils;
 
@@ -161,6 +162,30 @@ namespace TabloidMVC.Repositories
                 }
             }
         }
+
+
+
+        public void AddPostReaction(PostReaction postReaction)
+        {
+            using (var conn = Connection)
+            {
+                conn.Open();
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        INSERT INTO PostReaction (PostId, ReactionId, UserProfileId)
+                        OUTPUT INSERTED.ID
+                        VALUES (@postId, @reactionId, @userId)";
+
+                    cmd.Parameters.AddWithValue("@postId",postReaction.PostId);
+                    cmd.Parameters.AddWithValue("@reactionId",postReaction.ReactionId);
+                    cmd.Parameters.AddWithValue("@userId",postReaction.UserProfileId);
+
+                    postReaction.Id = (int)cmd.ExecuteScalar();
+                }
+            }
+        }
+
 
         public void Delete(int postId)
         {

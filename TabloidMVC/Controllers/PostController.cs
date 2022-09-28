@@ -17,11 +17,13 @@ namespace TabloidMVC.Controllers
     {
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IReactionRepository _reactionRepository;
 
-        public PostController(IPostRepository postRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, IReactionRepository reactionRepository, ICategoryRepository categoryRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
+            _reactionRepository = reactionRepository;
         }
 
         public IActionResult Index()
@@ -29,6 +31,36 @@ namespace TabloidMVC.Controllers
             var posts = _postRepository.GetAllPublishedPosts();
             return View(posts);
         }
+
+
+        public IActionResult React(int id)
+        {
+            var post = _postRepository.GetPostById(id);
+
+            if (post == null)
+                return NotFound();
+
+            PostReactionViewModel vm = new PostReactionViewModel()
+            {
+                allReactions = _reactionRepository.GetAll(),
+                postReaction = new PostReaction()
+                {
+                    PostId = post.Id,
+                    UserProfileId = GetCurrentUserProfileId()
+                }
+            };
+            return View(vm);
+        }
+
+
+        [HttpPost]
+        public IActionResult React(int id, int reactId)
+        {
+            var userId = GetCurrentUserProfileId();
+            _postRepository.AddPostReaction(new PostReaction() { PostId = id,ReactionId = reactId,UserProfileId = userId});
+            return RedirectToAction("Details", new { id = id });
+        }
+
 
         public IActionResult Details(int id)
         {
@@ -64,7 +96,6 @@ namespace TabloidMVC.Controllers
                 return View(post);
             }
         }
-
 
         public IActionResult Create()
         {
