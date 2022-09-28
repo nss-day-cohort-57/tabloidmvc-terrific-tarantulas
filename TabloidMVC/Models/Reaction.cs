@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace TabloidMVC.Models
 {
@@ -7,6 +8,8 @@ namespace TabloidMVC.Models
         [Required]
         public int Id { get; set; }
         public string Name { get; set; }
+
+        [DisplayName("Image Url")]
         public string ImageLocation { get; set; }
     }
 }
