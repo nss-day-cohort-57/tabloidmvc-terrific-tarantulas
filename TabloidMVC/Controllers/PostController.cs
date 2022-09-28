@@ -81,7 +81,18 @@ namespace TabloidMVC.Controllers
                     return NotFound();
                 }
             }
-            return View(post);
+
+            var reactions = _reactionRepository.GetReactionsByPost(id);
+
+            PostViewModel pvm = new PostViewModel()
+            {
+                post = post,
+                reactions = reactions,
+                currentuserId = GetCurrentUserProfileId()
+
+        };
+
+            return View(pvm);
         }
 
         public IActionResult Delete(int id)

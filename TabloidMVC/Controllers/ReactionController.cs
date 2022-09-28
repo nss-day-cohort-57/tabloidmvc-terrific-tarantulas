@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TabloidMVC.Models;
 using TabloidMVC.Repositories;
 
 namespace TabloidMVC.Controllers
@@ -31,16 +32,18 @@ namespace TabloidMVC.Controllers
         // GET: ReactionController/Create
         public ActionResult Create()
         {
-            return View();
+            Reaction reaction = new Reaction();
+            return View(reaction);
         }
 
         // POST: ReactionController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(Reaction created)
         {
             try
             {
+                _reactionRepository.Add(created);
                 return RedirectToAction(nameof(Index));
             }
             catch

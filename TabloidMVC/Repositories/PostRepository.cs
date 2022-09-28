@@ -13,6 +13,7 @@ namespace TabloidMVC.Repositories
     public class PostRepository : BaseRepository, IPostRepository
     {
         public PostRepository(IConfiguration config) : base(config) { }
+
         public List<Post> GetAllPublishedPosts()
         {
             using (var conn = Connection)
@@ -34,7 +35,8 @@ namespace TabloidMVC.Repositories
                               LEFT JOIN Category c ON p.CategoryId = c.id
                               LEFT JOIN UserProfile u ON p.UserProfileId = u.id
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
-                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()";
+                        WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
+                        ORDER BY p.PublishDateTime DESC";
                     var reader = cmd.ExecuteReader();
 
                     var posts = new List<Post>();
@@ -73,8 +75,7 @@ namespace TabloidMVC.Repositories
                               LEFT JOIN UserProfile u ON p.UserProfileId = u.id
                               LEFT JOIN UserType ut ON u.UserTypeId = ut.id
                         WHERE IsApproved = 1 AND PublishDateTime < SYSDATETIME()
-                              AND p.id = @id
-                        ORDER BY p.PublishDateTime DESC";
+                              AND p.id = @id";
 
                     cmd.Parameters.AddWithValue("@id", id);
                     var reader = cmd.ExecuteReader();
@@ -134,7 +135,6 @@ namespace TabloidMVC.Repositories
             }
         }
 
-
         public void Add(Post post)
         {
             using (var conn = Connection)
@@ -164,8 +164,6 @@ namespace TabloidMVC.Repositories
             }
         }
 
-
-
         public void AddPostReaction(PostReaction postReaction)
         {
             using (var conn = Connection)
@@ -178,15 +176,14 @@ namespace TabloidMVC.Repositories
                         OUTPUT INSERTED.ID
                         VALUES (@postId, @reactionId, @userId)";
 
-                    cmd.Parameters.AddWithValue("@postId",postReaction.PostId);
-                    cmd.Parameters.AddWithValue("@reactionId",postReaction.ReactionId);
-                    cmd.Parameters.AddWithValue("@userId",postReaction.UserProfileId);
+                    cmd.Parameters.AddWithValue("@postId", postReaction.PostId);
+                    cmd.Parameters.AddWithValue("@reactionId", postReaction.ReactionId);
+                    cmd.Parameters.AddWithValue("@userId", postReaction.UserProfileId);
 
                     postReaction.Id = (int)cmd.ExecuteScalar();
                 }
             }
         }
-
 
         public void Delete(int postId)
         {
@@ -196,7 +193,7 @@ namespace TabloidMVC.Repositories
                 using (var cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"DELETE FROM Post
-                                        WHERE Id = @id";                          
+                                        WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", postId);
                     cmd.ExecuteNonQuery();
                 }

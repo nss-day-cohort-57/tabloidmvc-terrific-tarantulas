@@ -1,43 +1,54 @@
-﻿@model TabloidMVC.Models.Post
+﻿@model TabloidMVC.Models.ViewModels.PostViewModel
 
 @{
-    ViewData["Title"] = $"Post - {Model.Title}";
+    ViewData["Title"] = $"Post - {Model.post.Title}";
 }
 
 <div class="container pt-5">
     <div class="post">
         <section class="px-3">
             <div class="row justify-content-between">
-                <h1 class="text-secondary">@Model.Title</h1>
-                <h1 class="text-black-50">@Model.Category.Name</h1>
+                <h1 class="text-secondary">@Model.post.Title</h1>
+                <h1 class="text-black-50">@Model.post.Category.Name</h1>
             </div>
             <div class="row justify-content-between">
-                <p class="text-secondary">Written by @Model.UserProfile.DisplayName</p>
-                <p class="text-black-50">Published on @Html.DisplayFor(model => model.PublishDateTime)</p>
+                <p class="text-secondary">Written by @Model.post.UserProfile.DisplayName</p>
+                <p class="text-black-50">Published on @Html.DisplayFor(model => model.post.PublishDateTime)</p>
             </div>
             <div class="row">
-                <a asp-action="React" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Add Reaction">
+                <a asp-action="React" asp-route-id="@Model.post.Id" class="btn btn-outline-primary mx-1" title="Add Reaction">
                     <i class="fas fa-smile"></i>
                 </a>
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Edit">
+                <a asp-action="Edit" asp-route-id="@Model.post.Id" class="btn btn-outline-primary mx-1" title="Edit">
                     <i class="fas fa-pencil-alt"></i>
                 </a>
-                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-primary mx-1" title="Delete">
+                <a asp-action="Delete" asp-route-id="@Model.post.Id" class="btn btn-outline-primary mx-1" title="Delete">
                     <i class="fas fa-trash"></i>
                 </a>
             </div>
         </section>
         <hr />
-        @if (!string.IsNullOrWhiteSpace(Model.ImageLocation))
+        @if (!string.IsNullOrWhiteSpace(Model.post.ImageLocation))
         {
-            <section>
-                <div>
-                    <img src="@Model.ImageLocation" height="400px"/>
-                </div>
-            </section>
+            <div class="row">
+                <img src="@Model.post.ImageLocation" height="400px" />
+                <table>
+                    <tr>
+                        @foreach (var item in Model.reactions)
+                        {
+                            <td>
+                                <button disabled>
+                                    <img src="@item.ImageLocation" width="50px" height="50px" />
+                                </button>
+                            </td>
+                        }
+                    </tr>
+                </table>
+            </div>
+
         }
         <section class="row post__content">
-            <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.Content)</p>
+            <p class="col-sm-12 mt-5">@Html.DisplayFor(model => model.post.Content)</p>
         </section>
     </div>
 </div>
