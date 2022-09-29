@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TabloidMVC.Models;
@@ -17,6 +18,19 @@ namespace TabloidMVC.Controllers
         public AccountController(IUserProfileRepository userProfileRepository)
         {
             _userProfileRepository = userProfileRepository;
+        }
+
+        // GET: AccountController
+        public ActionResult Index()
+        {
+            List<UserProfile> profiles = _userProfileRepository.GetAll().OrderBy(x => x.FirstName).ToList();
+            return View(profiles);
+        }
+
+        // GET: AccountController/Details/5
+        public ActionResult Details(int id)
+        {
+            return View();
         }
 
         public IActionResult Login()
