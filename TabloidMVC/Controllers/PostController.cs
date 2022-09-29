@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using TabloidMVC.Models;
 using TabloidMVC.Models.ViewModels;
@@ -26,10 +27,25 @@ namespace TabloidMVC.Controllers
             _reactionRepository = reactionRepository;
         }
 
-        public IActionResult Index()
+        [HttpPost]
+        public IActionResult Index(PostsViewModel postsView)
+        {
+
+           return RedirectToAction("Index", new { postsView.CategoryId });
+        }
+        public IActionResult Index(int? categoryId)
         {
             var posts = _postRepository.GetAllPublishedPosts();
-            return View(posts);
+            if (categoryId != null && categoryId != 0)
+            {
+                posts = posts.Where(p => p.CategoryId == categoryId).ToList();
+            }
+            PostsViewModel vm = new PostsViewModel()
+            {
+                Posts = posts,
+                Categories = _categoryRepository.GetAll().OrderBy(c => c.Name).ToList()
+            };
+            return View(vm);
         }
 
         public IActionResult MyPosts(int userProfileId)
