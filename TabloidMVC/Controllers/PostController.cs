@@ -19,12 +19,14 @@ namespace TabloidMVC.Controllers
         private readonly IPostRepository _postRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IReactionRepository _reactionRepository;
+        private readonly ICommentRepository _commentRepository;
 
-        public PostController(IPostRepository postRepository, IReactionRepository reactionRepository, ICategoryRepository categoryRepository)
+        public PostController(IPostRepository postRepository, IReactionRepository reactionRepository, ICategoryRepository categoryRepository, ICommentRepository commentRepository)
         {
             _postRepository = postRepository;
             _categoryRepository = categoryRepository;
             _reactionRepository = reactionRepository;
+            _commentRepository = commentRepository;
         }
 
         [HttpPost]
@@ -53,6 +55,39 @@ namespace TabloidMVC.Controllers
             userProfileId = GetCurrentUserProfileId();
             var post = _postRepository.GetCurrentUsersPosts(userProfileId);
             return View(post);
+        }
+
+        public IActionResult Comment(int id)
+        {
+            var post = _postRepository.GetPostById(id);
+
+            if (post == null)
+                return NotFound();
+
+            Comment comment = new Comment()
+            {
+                PostId = post.Id,
+                UserProfileId = GetCurrentUserProfileId()
+            };
+            return View(comment);
+        }
+
+        [HttpPost]
+        public IActionResult Comment(int postId, Comment comment)
+        {
+            try
+            {
+                comment.PostId = postId;
+                comment.UserProfileId = GetCurrentUserProfileId();
+                comment.CreateDateTime = DateAndTime.Now;
+
+                _commentRepository.AddComment(comment);
+                return RedirectToAction("Details", new { id = postId });
+            }
+            catch
+            {
+                return View(comment);
+            }
         }
 
 
