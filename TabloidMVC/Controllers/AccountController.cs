@@ -30,7 +30,8 @@ namespace TabloidMVC.Controllers
         // GET: AccountController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            UserProfile profile = _userProfileRepository.GetById(id);
+            return View(profile);
         }
 
         public IActionResult Login()
