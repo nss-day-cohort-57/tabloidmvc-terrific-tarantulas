@@ -89,8 +89,8 @@ namespace TabloidMVC.Controllers
                 post = post,
                 reactions = reactions,
                 currentuserId = GetCurrentUserProfileId()
-
-        };
+            
+            };
 
             return View(pvm);
         }
